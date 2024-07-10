@@ -1,7 +1,13 @@
-import 'package:blog/Widget/bottom_bar.dart';
+import 'package:blog/Account/Screen/account_screen.dart';
+import 'package:blog/Home/Screen/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:blog/Widget/bottom_bar.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  await dotenv.load(fileName: 'assets/config/.env');
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
@@ -25,15 +31,11 @@ class _MyAppState extends State<MyApp> {
         length: 2,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          body: const TabBarView(
+          body: TabBarView(
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
-              Center(
-                child: Text('Home'),
-              ),
-              Center(
-                child: Text('Account'),
-              ),
+              HomeScreen(),
+              AccountScreen(),
             ],
           ),
           bottomNavigationBar: Bottom(),

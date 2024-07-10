@@ -13,8 +13,8 @@ class Bottom extends StatelessWidget {
           unselectedLabelColor: Colors.black54,
           indicatorColor: Colors.transparent,
           tabs: <Widget>[
-            ButtonTextWidget(text: '홈', icon: Icons.home),
-            ButtonTextWidget(text: '계정', icon: Icons.account_box),
+            ButtonTextWidget(text: 'Home', icon: Icons.home),
+            ButtonTextWidget(text: 'Account', icon: Icons.account_box),
           ],
         ),
       ),
