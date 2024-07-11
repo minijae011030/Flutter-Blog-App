@@ -26,7 +26,14 @@ class Post extends StatelessWidget {
           Text(postTitle),
           Text(category),
           Text(viewed.toString()),
-          Html(data: postContents)
+          ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: tags.length,
+              itemBuilder: (context, index) {
+                return Text(tags[index]);
+              }),
+          Html(data: postContents),
         ],
       ),
     );
