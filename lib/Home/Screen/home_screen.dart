@@ -130,7 +130,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           ListTile(
                             title: Text(post['postTitle']),
                             subtitle: Text(post['categoryName']),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (BuildContext context) {
+                                    return PostScreen(postSeq: post['postSeq']);
+                                  }));
+                            },
                           ),
                           HorizontalLine(),
                         ],

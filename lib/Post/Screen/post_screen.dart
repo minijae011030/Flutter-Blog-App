@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -9,20 +11,58 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostState extends State<PostScreen> {
-  Future<Object>? post;
+  Future<Map<String, dynamic>>? post;
 
   @override
   void initState() {
     super.initState();
+    post = _postAPI();
+  }
+
+  Future<Map<String, dynamic>> _postAPI() async {
+    var url = Uri.parse("${dotenv.env['BASE_URL']}/post/contents");
+
+    var result = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "postSeq": widget.postSeq,
+          "blogId": dotenv.env['BLOG_ID'],
+        }));
+
+    if (result.statusCode == 200) {
+      var res = jsonDecode(result.body);
+
+      return res['postList'];
+    } else {
+      throw Exception('Failed to load data');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('post'),
-      ),
-      body: Container(child: Text("post")),
-    );
+    return FutureBuilder(
+        future: Future.wait([post!]),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Text('No post found');
+          }
+
+          var postData = snapshot.data![0];
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("${postData['postTitle']}"),
+            ),
+            body: Container(child: Text("post")),
+          );
+        });
   }
 }
