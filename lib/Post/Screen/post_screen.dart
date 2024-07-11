@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:blog/Post/Widget/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -58,11 +59,17 @@ class _PostState extends State<PostScreen> {
           var postData = snapshot.data![0];
 
           return Scaffold(
-            appBar: AppBar(
-              title: Text("${postData['postTitle']}"),
-            ),
-            body: Container(child: Text("post")),
-          );
+              appBar: AppBar(
+                title: Text("${postData['postTitle']}"),
+              ),
+              body: Post(
+                postSeq: postData['postSeq'],
+                postTitle: postData['postTitle'],
+                postContents: postData['postContents'],
+                category: postData['category'],
+                tags: postData['tags'],
+                viewed: postData['viewed'],
+              ));
         });
   }
 }
