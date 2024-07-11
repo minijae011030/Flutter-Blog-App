@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:blog/Post/Screen/post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<dynamic>> _pinnedPostListAPI() async {
-    var url = Uri.parse("${dotenv.env['BASE_URL']}/post/list?page=1&size=5");
+    var url = Uri.parse("${dotenv.env['BASE_URL']}/post/list?page=1&size=3");
 
     var result = await http.post(url,
         headers: {"Content-Type": "application/json"},
@@ -56,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Home")),
+      appBar: AppBar(title: const Text("Home")),
       body: FutureBuilder<List<dynamic>>(
         future: Future.wait([pinnedPostList!, postList!]),
         builder: (context, snapshot) {
@@ -82,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                       child: Text(
                         "고정글 >",
                         style: TextStyle(
@@ -90,9 +91,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     ...pinnedPosts.map<Widget>((post) {
-                      return ListTile(
-                        title: Text(post['postTitle']),
-                        subtitle: Text(post['categoryName']),
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          ListTile(
+                            title: Text(post['postTitle']),
+                            subtitle: Text(post['categoryName']),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (BuildContext context) {
+                                    return PostScreen(postSeq: post['postSeq']);
+                                  }));
+                            },
+                          ),
+                          HorizontalLine(),
+                        ],
                       );
                     }).toList(),
                   ],
@@ -102,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.fromLTRB(15, 30, 0, 0),
                       child: Text(
                         "최신글 >",
                         style: TextStyle(
@@ -110,9 +124,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     ...posts.map<Widget>((post) {
-                      return ListTile(
-                        title: Text(post['postTitle']),
-                        subtitle: Text(post['categoryName']),
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          ListTile(
+                            title: Text(post['postTitle']),
+                            subtitle: Text(post['categoryName']),
+                            onTap: () {},
+                          ),
+                          HorizontalLine(),
+                        ],
                       );
                     }).toList(),
                   ],
@@ -122,5 +143,12 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+}
+
+class HorizontalLine extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(height: 1, width: 370, color: Colors.black45);
   }
 }
